@@ -1,53 +1,51 @@
 # HandVR
 
-Protótipo Android de realidade virtual com interação por gestos das mãos, pensado para celulares sem giroscópio.
+Aplicativo experimental de realidade virtual para Android, com foco em interação por mãos e suporte a celulares sem giroscópio.
 
-## Estado atual
+## Estado do projeto
 
-Este repositório é um **starter de desenvolvimento Unity**, não um APK pronto. Ele inclui a arquitetura inicial, cena de demonstração, controles alternativos de visão e uma interface para conectar o rastreador de mãos.
+**Etapa atual: interface inicial e prévia da câmera.** O projeto é uma base Unity em desenvolvimento, ainda não é um APK pronto e não deve ser descrito como rastreador de mãos funcional.
 
-### O que já está preparado
-- Estrutura de projeto Unity.
-- Modo de visualização normal e modo VR lado a lado (estéreo).
-- Orientação sem giroscópio por arrasto/toque na tela.
-- Interface de abstração para rastreamento de mãos.
-- Gestos previstos: pinça, mão aberta e punho.
-- Configuração inicial para Android.
+### Já incluído
+- Projeto Unity 2022.3 LTS.
+- Interface inicial escura com identidade visual HandVR.
+- Criação automática da cena inicial pelo Editor.
+- Prévia da câmera do celular usando `WebCamTexture`.
+- Solicitação de permissão de câmera no Android.
+- Controles iniciais de modo celular e VR Box.
+- Estrutura de dados e reconhecedor heurístico para landmarks de mão.
+- Controle de visão por toque/arrasto como alternativa ao giroscópio.
 
-### O que ainda precisa ser integrado/testado
-- Plugin de visão computacional MediaPipe para Unity/Android.
-- Integração de câmera USB UVC para câmera externa. O suporte depende do Android, do adaptador e do driver.
-- Ajuste de distância interpupilar, distorção das lentes e teste no VR Box.
-- Compilação e teste em aparelho real.
+### Ainda pendente
+- Integração real do MediaPipe Hands (modelo e runtime Android).
+- Rastreamento de mãos por câmera externa UVC.
+- Renderização estereoscópica 3D adequada ao VR Box.
+- Calibração de lentes e distância interpupilar.
+- Testes em aparelho Android e geração/validação do APK.
 
-## Requisitos
-- Unity 2022.3 LTS ou versão LTS compatível.
-- Android Build Support (SDK, NDK e OpenJDK pelo Unity Hub).
-- Android 8.0 ou superior recomendado.
-- Para rastreamento pelo próprio celular, use o modo sem headset: a câmera traseira precisa enxergar as mãos.
-- No VR Box, a câmera do telefone normalmente fica coberta. Para rastrear mãos nesse modo, será necessária uma câmera externa compatível ou um segundo dispositivo.
+## Abrir o projeto
 
-## Abrir
-1. Instale o Unity Hub e o módulo Android Build Support.
-2. No Unity Hub, escolha **Add > Add project from disk** e selecione esta pasta.
-3. Abra `Assets/Scenes/HandVR.unity` (ou crie uma cena e adicione `HandVRBootstrap`).
-4. Em **File > Build Profiles**, selecione Android.
-5. Configure package name como `com.handvr.app` e conceda permissão de câmera.
-6. Para um APK de teste, use **Build**.
+1. Instale Unity Hub e Unity 2022.3 LTS com **Android Build Support**, SDK, NDK e OpenJDK.
+2. Baixe/clonar este repositório.
+3. No Unity Hub, selecione **Add project from disk** e abra a pasta.
+4. Aguarde o Unity importar os arquivos e criar `Assets/Scenes/HandVR.unity`.
+5. Se necessário, use **HandVR > Create Startup Scene**.
+6. Pressione Play para testar a interface no Editor.
+7. Para gerar um APK, selecione Android em Build Profiles e compile a cena inicial.
 
-## Arquitetura de rastreamento
-`IHandTrackingProvider` é a interface que recebe landmarks normalizados (0 a 1). O `HandTrackingDemoProvider` é apenas um provedor de demonstração para validar a interface; ele **não reconhece mãos reais**. Substitua-o por um adaptador MediaPipe que alimente `HandLandmarkFrame`.
+Consulte [Assets/Scenes/SETUP.md](Assets/Scenes/SETUP.md) para detalhes e limitações.
 
-Gestos iniciais:
-- Pinça: distância entre ponta do polegar e ponta do indicador.
-- Mão aberta: dedos estendidos.
-- Punho: dedos recolhidos.
+## Importante sobre o hardware
 
-## Sem giroscópio
-`TouchLookController` controla a orientação com arrasto na tela. É uma alternativa de entrada, não rastreamento real da cabeça. Um futuro modo de câmera frontal poderá estimar orientação de cabeça, mas a precisão depende da iluminação e da câmera.
+- Sem giroscópio, o controle de visão inicial é feito por toque/arrasto. Isso não é rastreamento preciso da cabeça.
+- No VR Box, a câmera traseira do telefone costuma ficar coberta. Para rastrear as mãos dentro do headset, será necessária uma câmera externa compatível ou um segundo dispositivo.
+- A prévia de câmera já está implementada, mas **não identifica mãos ainda**. O MediaPipe precisa ser integrado separadamente.
 
-## Câmera externa
-O Android não oferece uma API USB universal para toda câmera UVC. A implementação final precisará validar o dispositivo e possivelmente usar uma biblioteca UVC Android. Não há promessa de compatibilidade com qualquer webcam.
+## Gestos planejados
+- Pinça: polegar e indicador próximos.
+- Palma aberta.
+- Punho fechado.
 
-## Licença
-Código inicial disponibilizado para estudo e desenvolvimento. Adicione as licenças dos SDKs/plugins de terceiros que integrar.
+## Licenças
+
+Verifique e inclua os avisos/licenças dos SDKs de terceiros que forem adicionados ao projeto.
