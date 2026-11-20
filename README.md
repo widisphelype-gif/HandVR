@@ -18,13 +18,12 @@ Aplicativo experimental de realidade virtual para Android, com foco em interaç�
 - Reconhecimento heurístico inicial de pinça, palma aberta e punho.
 - Controle de visão por toque/arrasto como alternativa ao giroscópio.
 
-## Preparar o modelo
-Baixe o modelo oficial Hand Landmarker float16 e coloque-o em:
+## Modelo incluído
+O modelo oficial Hand Landmarker float16 já está no repositório em:
 
 `Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets/hand_landmarker.task`
 
-Download:
-https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+[Download oficial do modelo](https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task)
 
 Consulte [Assets/Scenes/SETUP.md](Assets/Scenes/SETUP.md) para o passo a passo completo, build Android e diagnóstico.
 
