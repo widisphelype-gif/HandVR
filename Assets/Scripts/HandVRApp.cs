@@ -10,8 +10,7 @@ using UnityEngine.Android;
 namespace HandVR
 {
     /// <summary>
-    /// Builds the first HandVR interface at runtime. This is a functional UI/camera
-    /// foundation; it does not perform ML hand recognition yet.
+    /// Builds the HandVR interface at runtime and connects the Android MediaPipe provider.
     /// </summary>
     public class HandVRApp : MonoBehaviour
     {
