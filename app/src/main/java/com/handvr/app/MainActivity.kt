@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         val subtitle = TextView(this).apply {
             text = "CONTROLE DE REALIDADE VIRTUAL"
             textSize = 12f
-            setTextColor(0xFFAE BED2.toInt())
+            setTextColor(0xFFAE_BED2.toInt())
         }
         root.addView(subtitle)
 
