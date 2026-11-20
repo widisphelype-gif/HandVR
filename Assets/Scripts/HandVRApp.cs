@@ -10,8 +10,7 @@ using UnityEngine.Android;
 namespace HandVR
 {
     /// <summary>
-    /// Builds the first HandVR interface at runtime. This is a functional UI/camera
-    /// foundation; it does not perform ML hand recognition yet.
+    /// Builds the HandVR interface at runtime and connects the Android MediaPipe provider.
     /// </summary>
     public class HandVRApp : MonoBehaviour
     {
@@ -20,6 +19,8 @@ namespace HandVR
         private Text status;
         private Text cameraButtonLabel;
         private bool cameraRunning;
+        private MediaPipeHandTrackingProvider handProvider;
+        private Text handStatus;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
@@ -33,11 +34,14 @@ namespace HandVR
             Application.targetFrameRate = 60;
             Screen.orientation = ScreenOrientation.Portrait;
             BuildInterface();
-            SetStatus("Pronto. A câmera ainda não foi iniciada.");
+            handProvider = gameObject.AddComponent<MediaPipeHandTrackingProvider>();
+            handProvider.OnFrame += HandleHandFrame;
+            SetStatus("Pronto. Inicie a câmera e depois o reconhecimento.");
         }
 
         private void OnDestroy()
         {
+            if (handProvider != null) handProvider.OnFrame -= HandleHandFrame;
             StopCamera();
         }
 
@@ -124,11 +128,13 @@ namespace HandVR
                 new Color32(91, 64, 145, 255), () =>
                     SetStatus("VR Box: use um segundo dispositivo ou câmera externa para ver as mãos."));
 
-            MakeText(background.transform,
-                "SEM GIROSCÓPIO: use toque/arrasto para olhar. " +
-                "O rastreamento de mãos real será conectado em uma próxima etapa.",
-                18, FontStyle.Normal, new Color32(150, 166, 188, 255),
-                new Vector2(0.08f, 0.035f), new Vector2(0.92f, 0.115f),
+            MakeButton(background.transform, "Ativar reconhecimento de mãos",
+                new Vector2(0.07f, 0.055f), new Vector2(0.93f, 0.115f),
+                new Color32(18, 126, 106, 255), StartHandTracking);
+
+            handStatus = MakeText(background.transform, "MediaPipe: desligado", 17,
+                FontStyle.Normal, new Color32(150, 166, 188, 255),
+                new Vector2(0.08f, 0.012f), new Vector2(0.92f, 0.05f),
                 TextAnchor.MiddleCenter);
         }
 
@@ -186,12 +192,38 @@ namespace HandVR
 
             cameraRunning = webcam.width > 16;
             SetStatus(cameraRunning
-                ? "Câmera ativa. Prévia funcionando; mãos ainda não são reconhecidas."
+                ? "Câmera ativa. Agora você pode ativar o reconhecimento de mãos."
                 : "A câmera não iniciou. Verifique a permissão e tente novamente.");
+        }
+
+        private void StartHandTracking()
+        {
+            if (!cameraRunning || webcam == null)
+            {
+                SetStatus("Inicie a câmera antes do reconhecimento.");
+                return;
+            }
+            handProvider.StartTracking(webcam);
+            if (handStatus != null) handStatus.text = handProvider.IsRunning
+                ? "MediaPipe iniciado • mostre uma mão à câmera."
+                : "MediaPipe não iniciou • confira o modelo e o build Android.";
+        }
+
+        private void HandleHandFrame(HandLandmarkFrame frame)
+        {
+            if (handStatus == null) return;
+            if (!frame.hasHand)
+            {
+                handStatus.text = "Nenhuma mão detectada";
+                return;
+            }
+            handStatus.text = "Mão detectada • gesto: " +
+                HandGestureRecognizer.Recognize(frame);
         }
 
         private void StopCamera()
         {
+            if (handProvider != null) handProvider.StopTracking();
             if (webcam != null)
             {
                 if (webcam.isPlaying) webcam.Stop();
