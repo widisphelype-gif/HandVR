@@ -176,7 +176,9 @@ class MainActivity : ComponentActivity() {
             val rotation = image.imageInfo.rotationDegrees
             val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
             val upright = Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true)
-            raw.recycle()
+            // With 0-degree rotation Android may return the original bitmap.
+            // Recycle raw only when upright is a distinct bitmap.
+            if (upright !== raw) raw.recycle()
             val mpImage = BitmapImageBuilder(upright).build()
             val result = landmarker?.detectForVideo(mpImage, now)
             mpImage.close()
