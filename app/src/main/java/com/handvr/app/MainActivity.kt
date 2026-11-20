@@ -78,8 +78,8 @@ class MainActivity : ComponentActivity() {
         }
         leftPreview = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
         rightPreview = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP; visibility = View.GONE }
-        previews.addView(leftPreview, LinearLayout.LayoutParams(0, 0, 1f).apply { height = 0; weight = 1f })
-        previews.addView(rightPreview, LinearLayout.LayoutParams(0, 0, 1f).apply { height = 0; weight = 1f })
+        previews.addView(leftPreview, LinearLayout.LayoutParams(0, -1, 1f))
+        previews.addView(rightPreview, LinearLayout.LayoutParams(0, -1, 1f))
         root.addView(previews, LinearLayout.LayoutParams(-1, 0, 1f))
 
         status = TextView(this).apply {
@@ -161,8 +161,18 @@ class MainActivity : ComponentActivity() {
             val buffer = plane.buffer
             val bytes = ByteArray(buffer.remaining())
             buffer.get(bytes)
-            val raw = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-            raw.copyPixelsFromBuffer(java.nio.ByteBuffer.wrap(bytes))
+            val pixels = IntArray(image.width * image.height)
+            for (y in 0 until image.height) {
+                for (x in 0 until image.width) {
+                    val offset = y * plane.rowStride + x * plane.pixelStride
+                    val red = bytes[offset].toInt() and 0xFF
+                    val green = bytes[offset + 1].toInt() and 0xFF
+                    val blue = bytes[offset + 2].toInt() and 0xFF
+                    val alpha = bytes[offset + 3].toInt() and 0xFF
+                    pixels[y * image.width + x] = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+                }
+            }
+            val raw = Bitmap.createBitmap(pixels, image.width, image.height, Bitmap.Config.ARGB_8888)
             val rotation = image.imageInfo.rotationDegrees
             val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
             val upright = Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true)
