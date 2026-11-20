@@ -6,14 +6,11 @@
 - Câmera funcional e permissão concedida.
 - Modelo MediaPipe Hand Landmarker (instruções abaixo).
 
-## Preparar o modelo MediaPipe
-1. Baixe o modelo oficial **Hand Landmarker (float16)**:
-   https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
-2. Crie a pasta, caso ainda não exista:
-   `Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets/`
-3. Coloque o arquivo exatamente neste caminho:
-   `Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets/hand_landmarker.task`
-4. Não renomeie o arquivo. O módulo Android procura esse nome no pacote de assets.
+## Modelo MediaPipe
+O modelo oficial **Hand Landmarker (float16)** já está incluído no repositório em:
+`Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets/hand_landmarker.task`
+
+Não é necessário baixá-lo novamente. Se precisar restaurar o arquivo, use o [download oficial](https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task) e mantenha exatamente esse nome e caminho.
 
 O modelo é distribuído pelo projeto MediaPipe. Confira os termos e avisos de licença do modelo e da dependência antes de distribuir o aplicativo.
 
