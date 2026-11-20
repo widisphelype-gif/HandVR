@@ -1,0 +1,1 @@
+Crie a cena HandVR.unity no Editor Unity e adicione uma câmera, um objeto com TouchLookController, um objeto com HandTrackingDemoProvider e HandVRManager. A UI pode usar Canvas + Text + dois botões ligados a StartHands e StopHands.
