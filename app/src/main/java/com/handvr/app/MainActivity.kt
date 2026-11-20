@@ -179,11 +179,18 @@ class MainActivity : ComponentActivity() {
             // With 0-degree rotation Android may return the original bitmap.
             // Recycle raw only when upright is a distinct bitmap.
             if (upright !== raw) raw.recycle()
+            // Keep a separate display copy: closing MediaPipe's MPImage can
+            // release/recycle the bitmap used to build it.
+            val displayBitmap = upright.copy(Bitmap.Config.ARGB_8888, false)
             val mpImage = BitmapImageBuilder(upright).build()
-            val result = landmarker?.detectForVideo(mpImage, now)
-            mpImage.close()
-            renderFrame(upright, result)
-            upright.recycle()
+            val result = try {
+                landmarker?.detectForVideo(mpImage, now)
+            } finally {
+                mpImage.close()
+            }
+            renderFrame(displayBitmap, result)
+            displayBitmap.recycle()
+            if (!upright.isRecycled) upright.recycle()
         } catch (error: Exception) {
             runOnUiThread { status.text = "Falha no processamento: ${error.message}" }
         } finally {
