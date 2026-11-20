@@ -24,7 +24,7 @@ android {
 
     // Reuse the exact model uploaded to the repository; no duplicate binary required.
     sourceSets {
-        main.assets.srcDirs += ["../../Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets"]
+        main.assets.srcDirs += ["../Assets/Plugins/Android/HandVRMediaPipe.androidlib/src/main/assets"]
     }
 }
 
